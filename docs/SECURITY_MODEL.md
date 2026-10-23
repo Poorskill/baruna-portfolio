@@ -88,9 +88,11 @@ Endpoint publik `POST /contact` rentan terhadap bot spam dan automated abuse. Di
    - Skema berbahaya seperti `javascript:alert(1)` atau `data:text/html` secara otomatis ditolak oleh validator Laravel (teruji di `tests/Feature/ProjectCrudTest.php`).
 2. **Database Transactions**:
    - Mutasi kompleks yang melibatkan tabel relasi (`Project`, `project_images`, `project_skill`) dibungkus dalam `DB::transaction(...)` untuk menjamin konsistensi atomik jika terjadi error di tengah proses.
-3. **Audit Logging Tanpa Rahasia**:
+3. **Audit Logging & Kredensial Tanpa Rahasia**:
    - Setiap mutasi admin dicatat ke `activity_logs`.
    - Ringkasan log hanya mencatat tipe aksi (`created`, `updated`, `deleted`) dan ID entitas. Token sesi, password, dan nilai rahasia tidak pernah dicatat.
+   - Diagnostik koneksi database (`php artisan db:check`) menyamarkan panjang string password dan tidak pernah mencetak password atau Service URI lengkap ke terminal.
+   - Enkripsi TLS/SSL ditegakkan secara ketat pada koneksi remote Aiven MySQL.
 
 ---
 

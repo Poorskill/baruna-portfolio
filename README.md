@@ -36,19 +36,28 @@ Copy-Item .env.example .env
 php artisan key:generate
 ```
 
-Sesuaikan koneksi basis data di `.env`:
+Sesuaikan koneksi basis data di `.env` (Lokal atau Aiven Cloud MySQL):
 ```env
+# Opsi 1: Aiven Cloud MySQL
 DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=baruna_portfolio
-DB_USERNAME=root
-DB_PASSWORD=
+DB_HOST=mysql-37b0b0c8-barunadcahya-aa2c.d.aivencloud.com
+DB_PORT=26297
+DB_DATABASE=defaultdb
+DB_USERNAME=avnadmin
+DB_PASSWORD=<password_baru_aiven>
+MYSQL_ATTR_SSL_CA=
+
+# Opsi 2: MySQL Lokal (Laragon / XAMPP)
+# DB_HOST=127.0.0.1
+# DB_PORT=3306
+# DB_DATABASE=baruna_portfolio
+# DB_USERNAME=root
+# DB_PASSWORD=
 ```
 
-Pastikan basis data `baruna_portfolio` telah dibuat melalui Laragon / HeidiSQL / phpMyAdmin:
-```sql
-CREATE DATABASE IF NOT EXISTS baruna_portfolio CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+Uji koneksi basis data kapan saja dengan perintah aman:
+```powershell
+php artisan db:check
 ```
 
 ### 4. Jalankan Migrasi & Buat Symlink Media

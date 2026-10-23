@@ -32,8 +32,9 @@ Dokumen ini mencatat status verifikasi aktual dari setiap modul aplikasi berdasa
 | **Security Guards** | `EnsureAdmin.php`, `RegisteredUserController.php` | **Complete & Verified** | 403 untuk non-admin, 404 untuk draft publik, 404 untuk registrasi publik. | Tidak ada. |
 | **Three.js WebGL Engine**| `HeroThreeScene.vue` | **Complete & Verified** | Rendering 3D torus & wireframe icosahedron, memory cleanup, reduced motion support. | Tidak ada. |
 | **Lenis + GSAP Scroll** | `useSmoothScroll.ts`, `PublicLayout.vue` | **Complete & Verified** | Smooth scrolling terintegrasi dengan GSAP ticker dan event transisi halaman Inertia. | Dibatasi hanya di PublicLayout. |
-| **Test Suite Backend** | `phpunit.xml`, `tests/` | **Complete & Verified** | 51 feature & unit tests, 151 assertions lulus 100% di SQLite memory. | Tidak ada. |
-| **Frontend Asset Build** | `package.json`, `vite.config.js` | **Complete & Verified** | `npm run build` sukses tanpa error tipe TypeScript (`vue-tsc`). | Bundle size normal (~560kB uncompressed Home chunk). |
+| **Test Suite Backend** | `phpunit.xml`, `tests/` | **Complete & Verified** | 53 feature & unit tests, 162 assertions lulus 100% di SQLite memory. | Tidak ada. |
+| **Frontend Asset Build** | `package.json`, `vite.config.js` | **Complete & Verified** | `npm run build` sukses tanpa error tipe TypeScript (`vue-tsc`). | Bundle size normal. |
+| **Aiven MySQL & SSL** | `config/database.php`, `app/Console/Commands/CheckDatabaseConnection.php` | **Complete & Verified** | Terkoneksi sukses ke Aiven Cloud MySQL port 26297. 23 tabel aktif, 17 migrasi sukses, akun admin & seeders terverifikasi. | Tidak ada. |
 
 ---
 
