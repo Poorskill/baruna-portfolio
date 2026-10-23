@@ -96,12 +96,49 @@ Jika Anda ingin tetap menggunakan Vercel, berikut hambatan teknis yang harus dip
 
 ---
 
-## 6. Checklist Langkah Selanjutnya
+## 6. Panduan Deployment ke Vercel
 
-1. [ ] Buka konsol Aiven dan reset password user `avnadmin`.
-2. [ ] Buka berkas `.env` lokal Anda di `E:\Portofolio\baruna-portfolio\.env`.
-3. [ ] Masukkan password baru pada baris `DB_PASSWORD=`.
-4. [ ] Jalankan pengujian: `php artisan db:check`.
-5. [ ] Jalankan migrasi: `php artisan migrate --force`.
-6. [ ] Buat akun admin: `php artisan admin:create`.
-7. [ ] Masukkan kredensial yang sama ke Environment Variables Render Dashboard.
+Konfigurasi serverless Vercel telah disiapkan di repositori:
+- `vercel.json`: Konfigurasi runtime `vercel-php@0.7.3` dan URL rewriting ke `api/index.php`.
+- `api/index.php`: Serverless bridge yang otomatis membuat direktori writable di `/tmp/storage` dan mem-forward request ke kernel Laravel.
+- `.vercelignore`: Mengabaikan file yang tidak dibutuhkan untuk meminimalkan ukuran payload serverless.
+- `bootstrap/app.php`: Telah mendukung `env('APP_STORAGE')` dinamis untuk merutekan cache & views ke `/tmp/storage`.
+
+### Langkah-langkah Deploy ke Vercel:
+1. Push branch `main` ke GitHub setelah perubahan di-commit.
+2. Buka [vercel.com](https://vercel.com) dan login dengan akun GitHub Anda.
+3. Klik **Add New...** &rarr; **Project**.
+4. Pilih repositori **`Poorskill/baruna-portfolio`** &rarr; klik **Import**.
+5. Di bagian **Build and Output Settings**:
+   - Framework Preset: **Other**
+   - Root Directory: `./` (atau default root)
+   - Build Command: Biarkan default (`npm run build`)
+   - Output Directory: Biarkan default (`public`)
+6. Buka bagian **Environment Variables**, lalu tambahkan:
+   - `APP_NAME`: `Baruna Dwi Cahya`
+   - `APP_ENV`: `production`
+   - `APP_DEBUG`: `false`
+   - `APP_KEY`: `base64:qlZJ9tzzZ6oca62Db5WB7hA7hG4i3Z6gMGFiYmDW//Q=`
+   - `APP_URL`: URL Vercel Anda (misal `https://baruna-portfolio.vercel.app`)
+   - `DB_CONNECTION`: `mysql`
+   - `DB_HOST`: `mysql-37b0b0c8-barunadcahya-aa2c.d.aivencloud.com`
+   - `DB_PORT`: `26297`
+   - `DB_DATABASE`: `defaultdb`
+   - `DB_USERNAME`: `avnadmin`
+   - `DB_PASSWORD`: *(password Aiven Anda)*
+   - `SESSION_DRIVER`: `database`
+   - `CACHE_STORE`: `database`
+   - `LOG_CHANNEL`: `stderr`
+   - `APP_STORAGE`: `/tmp/storage`
+   - `VIEW_COMPILED_PATH`: `/tmp/storage/framework/views`
+7. Klik **Deploy**.
+
+---
+
+## 7. Checklist Status Akhir
+
+1. [x] Database Aiven MySQL 8.4 aktif di port 26297.
+2. [x] 17 migrasi database terpasang di `defaultdb` (23 tabel).
+3. [x] Akun admin `barunadcahya@gmail.com` dan seeders dasar terisi.
+4. [x] Konfigurasi serverless Vercel (`vercel.json`, `api/index.php`, `.vercelignore`) siap.
+5. [x] Konfigurasi Docker Render (`Dockerfile`, `render.yaml`) tetap siap sebagai alternatif.

@@ -1,0 +1,14 @@
+.git
+.github
+docker
+tests
+phpunit.xml
+.phpunit.result.cache
+*.md
+docs
+storage/logs/*
+!storage/logs/.gitignore
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+node_modules
