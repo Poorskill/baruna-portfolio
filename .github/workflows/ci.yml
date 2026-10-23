@@ -1,0 +1,73 @@
+name: CI Build & Tests
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    name: Build & Test Suite
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # -------------------------------------------------------------
+      # 1. Setup PHP & Composer Dependencies
+      # -------------------------------------------------------------
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo, sqlite3, pdo_sqlite, bcmath, fileinfo, gd
+          coverage: none
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      # -------------------------------------------------------------
+      # 2. Setup Node & Frontend Build (Vue 3, TypeScript, Vite)
+      # -------------------------------------------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'npm'
+
+      - name: Install NPM Dependencies
+        run: npm ci
+
+      - name: Compile Frontend Assets & Typecheck
+        run: npm run build
+
+      # -------------------------------------------------------------
+      # 3. Code Style & Automated Tests (SQLite in-memory)
+      # -------------------------------------------------------------
+      - name: Verify Code Style (Laravel Pint)
+        run: vendor/bin/pint --test
+
+      - name: Run Test Suite
+        env:
+          APP_ENV: testing
+          APP_KEY: base64:tQv0uE1jZ4A8B9cD3eF2gH1iJ0kL9mN8oP7qR6sT5uV=
+          DB_CONNECTION: sqlite
+          DB_DATABASE: ':memory:'
+        run: php artisan test
